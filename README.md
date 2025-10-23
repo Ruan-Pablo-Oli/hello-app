@@ -156,10 +156,9 @@
     ```yaml
     name: CI/CD Pipeline
 
-    on:
-      push:
-        branches: [ main ]
-
+  push:
+    tags:
+      - 'v*.*.*'
     jobs:
       build-and-push:
         runs-on: ubuntu-latest
@@ -181,8 +180,8 @@
           with:
             # Substitua 'SEU_USUARIO_DOCKERHUB'
             images: SEU_USUARIO_DOCKERHUB/hello-app
-            tags:
-              type=sha,prefix=,format=short
+            tags: |
+            type=semver,pattern={{version}},enable=true,latest=false
 
         - name: Build and push Docker image
           uses: docker/build-push-action@v4
@@ -249,32 +248,26 @@
 
 Esta seção contém todas as evidências solicitadas para a conclusão do projeto.
 
-### 1. Links dos Repositórios
 
-* **Link do repositório Git com a aplicação FastAPI + Dockerfile + GitHub Actions:**
-    * `[INSIRA O LINK DO SEU REPOSITÓRIO 'hello-app' AQUI]`
-* **Link do repositório com os manifests (deployment.yaml, service.yaml):**
-    * `[INSIRA O LINK DO SEU REPOSITÓRIO 'hello-manifests' AQUI]`
-
-### 2. Evidência de Build e Push da imagem no Docker Hub
+### 1. Evidência de Build e Push da imagem no Docker Hub
 
 *(Substitua esta linha por um print da tela de tags do seu repositório no Docker Hub, mostrando as diferentes tags de imagem criadas pelo pipeline.)*
 
 ![Evidência Docker Hub](link-para-sua-imagem.png)
 
-### 3. Evidência de atualização automática dos manifests
+### 2. Evidência de atualização automática dos manifests
 
 *(Substitua esta linha por um print do histórico de commits do seu repositório de manifestos, destacando o commit feito pelo "GitHub Actions".)*
 
 ![Evidência Commit Automático](link-para-sua-imagem.png)
 
-### 4. Captura de tela do ArgoCD com a aplicação sincronizada
+### 3. Captura de tela do ArgoCD com a aplicação sincronizada
 
 *(Substitua esta linha por um print da interface do ArgoCD mostrando o card da aplicação 'hello-app' com os status 'Synced' e 'Healthy'.)*
 
 ![Evidência ArgoCD](link-para-sua-imagem.png)
 
-### 5. Print do `kubectl get pods` com a aplicação rodando 
+### 4. Print do `kubectl get pods` com a aplicação rodando 
 
 *(Substitua esta linha por um print do seu terminal após rodar `kubectl get pods`, mostrando o pod 'hello-app-...' com STATUS `Running` e READY `1/1`.)*
 
