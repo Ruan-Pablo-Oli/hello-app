@@ -137,14 +137,16 @@
 
 4.  Acesse a UI em **https://localhost:8080/**.
 
+---
+
 ### 🔄 Etapa 4: Configuração do Pipeline CI/CD (GitHub Actions) 🔄
 
-1.  **Gere chaves SSH:** Para permitir que o **hello-app** atualize o **hello-manifests**.
+1. **Gere chaves SSH:** Para permitir que o **hello-app** atualize o **hello-manifests**.
     ```bash
     ssh-keygen -t rsa -b 4096 -C "github-actions" -f github-actions-key -N ""
     ```
 
-2.  **Configure os Segredos no GitHub**:
+2. **Configure os Segredos no GitHub**:
     * Vá em **hello-app** > **Settings** > **Secrets** > **Actions**:
         * **DOCKER_USERNAME**: Seu usuário do Docker Hub.
         * **DOCKER_PASSWORD**: Seu token de acesso do Docker Hub.
@@ -152,13 +154,14 @@
     * Vá em **hello-manifests** > **Settings** > **Deploy keys**:
         * Adicione a chave pública (**github-actions-key.pub**) e **marque "Allow write access"**.
 
-3.  **Crie o Workflow** no **hello-app**, no arquivo **.github/workflows/cicd.yaml**:
+3. **Crie o Workflow** no **hello-app**, no arquivo **.github/workflows/cicd.yaml**:
     ```yaml
     name: CI/CD Pipeline
 
-  push:
-    tags:
-      - 'v*.*.*'
+    on:
+      push:
+        branches: [ main ]
+
     jobs:
       build-and-push:
         runs-on: ubuntu-latest
@@ -181,7 +184,7 @@
             # Substitua 'SEU_USUARIO_DOCKERHUB'
             images: SEU_USUARIO_DOCKERHUB/hello-app
             tags: |
-            type=semver,pattern={{version}},enable=true,latest=false
+              type=semver,pattern={{version}},enable=true,latest=false
 
         - name: Build and push Docker image
           uses: docker/build-push-action@v4
@@ -217,6 +220,8 @@
             git push
     ```
 
+---
+
 ### 🌟 Etapa 5: Criação do App no ArgoCD 🌟
 
 1.  Na interface do ArgoCD, clique em **NEW APP**.
@@ -251,28 +256,29 @@ Esta seção contém todas as evidências solicitadas para a conclusão do proje
 
 ### 1. Evidência de Build e Push da imagem no Docker Hub
 
-*(Substitua esta linha por um print da tela de tags do seu repositório no Docker Hub, mostrando as diferentes tags de imagem criadas pelo pipeline.)*
 
-![Evidência Docker Hub](link-para-sua-imagem.png)
+
+![Evidência Docker Hub](/assets/docker.png)
+![Evidência Docker Hub](/assets/build_image_1.png)
+![Evidência Docker Hub](/assets/build_image_2.png)
+
 
 ### 2. Evidência de atualização automática dos manifests
 
-*(Substitua esta linha por um print do histórico de commits do seu repositório de manifestos, destacando o commit feito pelo "GitHub Actions".)*
 
-![Evidência Commit Automático](link-para-sua-imagem.png)
+![Evidência Commit Automático](/assets/hello_manifest.png)
 
 ### 3. Captura de tela do ArgoCD com a aplicação sincronizada
 
-*(Substitua esta linha por um print da interface do ArgoCD mostrando o card da aplicação 'hello-app' com os status 'Synced' e 'Healthy'.)*
 
-![Evidência ArgoCD](link-para-sua-imagem.png)
+![Evidência ArgoCD](/assets/argo_cd.png)
 
-### 4. Print do `kubectl get pods` com a aplicação rodando 
+### 4. Print do **kubectl get pods** com a aplicação rodando 
 
-*(Substitua esta linha por um print do seu terminal após rodar `kubectl get pods`, mostrando o pod 'hello-app-...' com STATUS `Running` e READY `1/1`.)*
+![Evidência get pods](/assets/get_pods.png)
 
-```bash
-$ kubectl get pods
-NAME                         READY   STATUS    RESTARTS   AGE
-hello-app-cf8844cb-4pzmx   1/1     Running   0          10m
-```
+
+### 5. Print do retorno do curl na aplicação
+
+![Retorno curl](/assets/aplicacao.png)
+
