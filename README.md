@@ -160,7 +160,8 @@
 
     on:
       push:
-        branches: [ main ]
+        tags:
+          - 'v*.*.*'
 
     jobs:
       build-and-push:
